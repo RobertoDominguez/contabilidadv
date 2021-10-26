@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Transaccion;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class TransaccionController extends Controller
 {
@@ -14,7 +15,10 @@ class TransaccionController extends Controller
      */
     public function index()
     {
-        //
+        $transacciones = Transaccion::whereDate('created_at', '=', date('Y-m-d'))
+            ->where('id_usuario', auth()->user()->id)->get();
+
+        return view('transacciones', compact('transacciones'))->with('user', Auth::user());
     }
 
     /**
@@ -24,7 +28,7 @@ class TransaccionController extends Controller
      */
     public function create()
     {
-        //
+        return view('transaccion_create',)->with('user', Auth::user());
     }
 
     /**
@@ -35,7 +39,17 @@ class TransaccionController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $credentials = $request->validate([
+            'detalle' => ['required', 'max:250'],
+            'observaciones' => ['max:250'],
+            'total' => ['required', 'numeric', 'between:0,999.99']
+        ]);
+        $credentials['id_usuario'] = Auth::user()->id;
+        $credentials['es_ingreso'] = $request->has('es_ingreso');
+        
+        $transaccion = Transaccion::create($credentials);
+
+        return redirect()->route('transacciones');
     }
 
     /**
@@ -57,7 +71,7 @@ class TransaccionController extends Controller
      */
     public function edit(Transaccion $transaccion)
     {
-        //
+        return view('transaccion_edit', compact('transaccion'))->with('user', Auth::user());
     }
 
     /**
@@ -69,7 +83,16 @@ class TransaccionController extends Controller
      */
     public function update(Request $request, Transaccion $transaccion)
     {
-        //
+        $credentials = $request->validate([
+            'detalle' => ['required', 'max:250'],
+            'observaciones' => ['max:250'],
+            'total' => ['required', 'numeric', 'between:0,999.99']
+        ]);
+        $credentials['es_ingreso'] = $request->has('es_ingreso');
+
+        $transaccion->update($credentials);
+
+        return redirect()->route('transacciones');
     }
 
     /**
@@ -80,6 +103,7 @@ class TransaccionController extends Controller
      */
     public function destroy(Transaccion $transaccion)
     {
-        //
+        $transaccion->delete();
+        return redirect()->route('transacciones');
     }
 }

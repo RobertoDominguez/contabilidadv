@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
             VentaSeeder::class,
             DetalleVentaSeeder::class,
             AdminSeeder::class,
+            TransaccionSeeder::class
         ]);
     }
 }

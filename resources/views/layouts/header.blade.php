@@ -12,6 +12,11 @@
                         </span><span class="menu-desc"></span></a>
                 </li>
                 <li class="menu-item " aria-haspopup="true">
+                    <a href="{{ route('transacciones') }}" class="menu-link "><span class="menu-text">
+                            Transacciones del dia
+                        </span><span class="menu-desc"></span></a>
+                </li>
+                <li class="menu-item " aria-haspopup="true">
                     <a href="{{ route('caja') }}" class="menu-link "><span class="menu-text">
                             Caja
                         </span><span class="menu-desc"></span></a>

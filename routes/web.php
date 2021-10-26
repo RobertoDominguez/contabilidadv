@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\TransaccionController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VentaController;
 use Illuminate\Support\Facades\Route;
@@ -45,6 +46,17 @@ Route::middleware(['auth:web',])->group(function () {
     Route::get('/caja', [VentaController::class, 'caja'])->name('caja');
 
     Route::get('/json/ventas/mes', [VentaController::class, 'jsonVentasMes'])->name('json.ventas.mes');
+
+
+    Route::get('/transacciones', [TransaccionController::class, 'index'])->name('transacciones');
+
+    Route::get('/transaccion/nueva', [TransaccionController::class, 'create'])->name('transaccion.create');
+    Route::post('/transaccion/nueva', [TransaccionController::class, 'store'])->name('transaccion.store');
+
+    Route::get('/transaccion/editar/{transaccion}', [TransaccionController::class, 'edit'])->name('transaccion.edit');
+    Route::post('/transaccion/editar/{transaccion}', [TransaccionController::class, 'update'])->name('transaccion.update');
+
+    Route::get('/transaccion/eliminar/{transaccion}', [TransaccionController::class, 'destroy'])->name('transaccion.destroy');
 });
 
 

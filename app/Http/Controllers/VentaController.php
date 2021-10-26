@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\DetalleVenta;
 use App\Models\Producto;
+use App\Models\Transaccion;
 use App\Models\User;
 use App\Models\Venta;
 use Illuminate\Http\Request;
@@ -28,7 +29,10 @@ class VentaController extends Controller
             $venta['detalles'] = $detalles;
         }
 
-        return view('ventas', compact('ventas'))->with('user', Auth::user());
+        $transacciones = Transaccion::whereDate('created_at', '=', date('Y-m-d'))
+            ->where('id_usuario', auth()->user()->id)->get();
+
+        return view('ventas', compact('ventas','transacciones'))->with('user', Auth::user());
     }
 
     public function deudas()
@@ -153,7 +157,6 @@ class VentaController extends Controller
             'observaciones' => ['max:250'],
             'total' => ['required', 'numeric', 'between:0,999.99']
         ]);
-        $credentials['id_usuario'] = Auth::user()->id;
 
         $venta_correcta = false;
         foreach ($request->values as $cantidad) {
@@ -202,7 +205,8 @@ class VentaController extends Controller
     {
         $fecha = $request->fecha;
 
-        $ventas = Venta::whereDate('created_at', '=', Carbon::parse($request->fecha))->get();
+        $ventas = Venta::whereDate('created_at', '=', Carbon::parse($request->fecha))
+        ->where('id_usuario', auth()->user()->id)->get();
 
         foreach ($ventas as $venta) {
             $detalles = DetalleVenta::where('id_venta', $venta->id)
